@@ -10,18 +10,14 @@
     
     <style>
         /* Genel Sayfa Ayarları ve Haki Yeşili Arka Plan */
-        html, body {
+        body {
             margin: 0;
             padding: 0;
-            width: 100%;
-            overflow-x: hidden; /* Kesinlikle yatay kaydırmayı engeller */
-        }
-        body {
             font-family: 'Lora', serif;
             background: linear-gradient(135deg, #2d3b22 0%, #3f5231 50%, #25321c 100%);
             color: #f4eae1;
+            overflow-x: hidden;
             position: relative;
-            min-height: 100vh;
         }
 
         /* Arka Plan Hareketli Işık Süzmesi */
@@ -45,35 +41,37 @@
 
         /* Süzülen Yapraklar/Parçacıklar İçin Stil */
         .particle {
-            position: fixed;
-            top: -5vh;
-            pointer-events: none;
-            z-index: 9999;
-            user-select: none;
-            animation-name: fall;
-            animation-timing-function: linear;
-            animation-iteration-count: infinite;
-        }
+    position: fixed;
+    top: -5vh;
+    pointer-events: none;
+    z-index: 99999 !important; /* !important ile en üste çıkmaya zorluyoruz */
+    user-select: none;
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
 
         @keyframes fall {
-            0% { 
-                transform: translateY(-20px) translateX(0) rotate(0deg); 
-                opacity: 0; 
-            }
-            10% { 
-                opacity: 0.5; 
-            }
-            50% {
-                transform: translateY(50vh) translateX(15px) rotate(15deg);
-            }
-            90% { 
-                opacity: 0.5; 
-            }
-            100% { 
-                transform: translateY(105vh) translateX(-15px) rotate(-15deg); 
-                opacity: 0; 
-            }
-        }
+    0% { 
+        transform: translateY(-20px) translateX(0) rotate(0deg); 
+        opacity: 0; 
+    }
+    10% { 
+        opacity: 0.5; 
+    }
+    50% {
+        /* Yolun yarısında hafifçe sağa kayıp döner */
+        transform: translateY(50vh) translateX(15px) rotate(15deg);
+    }
+    90% { 
+        opacity: 0.5; 
+    }
+    100% { 
+        /* Aşağı inerken sola doğru salınır */
+        transform: translateY(105vh) translateX(-15px) rotate(-15deg); 
+        opacity: 0; 
+    }
+}
 
         /* YUMUŞAK GEÇİŞ: Sayfa Elemanlarının Süzülerek Gelmesi */
         .fade-in-up {
@@ -101,7 +99,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 10000;
+            z-index: 9999;
             transition: all 1.5s cubic-bezier(0.77, 0, 0.175, 1);
         }
 
@@ -222,12 +220,7 @@
             letter-spacing: 2px;
         }
 
-        /* RENKLİ NOT KAĞITLARI (POST-IT) Masaüstü Varsayılan Düzeni */
-        .notes-container {
-            width: 100%;
-            box-sizing: border-box;
-        }
-        
+        /* RENKLİ NOT KAĞITLARI (POST-IT) Masaüstü Düzeni */
         .sticky-note {
             position: fixed;
             width: 170px;
@@ -261,7 +254,7 @@
             font-size: 1.2rem;
         }
 
-        /* Masaüstü Sabit Konumları */
+        /* Masaüstü Konumları */
         .note-left-1 { top: 20vh; left: 40px; background: #f1e4c3; transform: rotate(-5deg); }
         .note-left-2 { top: 60vh; left: 50px; background: #d4e2cd; transform: rotate(4deg); }
         .note-right-1 { top: 25vh; right: 40px; background: #eadeca; transform: rotate(6deg); }
@@ -373,7 +366,6 @@
             opacity: 0;
             visibility: hidden;
             transform: scale(0.9);
-            pointer-events: none; /* Arkadaki resme erişimi engellemesin */
         }
 
         .overlay-text {
@@ -434,7 +426,7 @@
             max-width: 550px;
             perspective: 1000px;
             cursor: pointer;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .envelope {
@@ -458,6 +450,14 @@
             transform-origin: top;
             transition: transform 0.6s ease 0.2s, z-index 0.2s ease 0.4s;
             z-index: 4;
+        }
+
+        @media (max-width: 600px) {
+            .envelope-flap {
+                border-left-width: calc(100vw * 0.45);
+                border-right-width: calc(100vw * 0.45);
+                border-top-width: 150px;
+            }
         }
 
         .envelope-pockets {
@@ -494,7 +494,7 @@
         /* ZARFIN İÇİNDEKİ MEKTUP KAĞIDI */
         .letter-paper {
             position: absolute;
-            top: 5%;
+            bottom: 10px;
             left: 5%;
             width: 90%;
             height: 90%;
@@ -526,7 +526,7 @@
             font-weight: bold;
         }
 
-        /* ZARF AÇILDIĞINDAKİ DURUMLAR (Aşağı Doğru Açılma - Mobil Uyumlu) */
+        /* ZARF AÇILDIĞINDAKİ DURUMLAR */
         .envelope-wrapper.open .envelope-flap {
             transform: rotateX(180deg);
             z-index: 1;
@@ -539,7 +539,7 @@
         }
 
         .envelope-wrapper.open .letter-paper {
-            transform: translateY(180px); /* Üste fırlayıp taşmaması için aşağı süzülme sağlandı */
+            transform: translateY(-50%);
             height: auto;
             overflow: visible;
             z-index: 4;
@@ -579,28 +579,16 @@
             transform: scale(1.1) rotate(15deg);
         }
 
-        /* TELEFONLAR VE TABLETLER İÇİN MOBİL AYARLAR */
+        /* TELEFONLAR VE TABLETLER İÇİN AKILLI MOBİL AYARLAR */
         @media (max-width: 1200px) {
-            .glass-header-container { padding: 35px 20px; width: 95%; border-radius: 25px; }
+            .glass-header-container { padding: 35px 20px; width: 90%; border-radius: 25px; }
             .main-title { font-size: 2.8rem; }
             .title-ampersand { font-size: 2.2rem; }
             .sub-title { font-size: 1.1rem; margin-bottom: 25px; }
             #timer-big { font-size: 2.2rem; }
             #timer-small { font-size: 1rem; }
             
-            /* Sabit Not Kağıtları Kapsayıcısı */
-            .notes-container {
-                width: 100%;
-                overflow-x: auto;
-                padding: 30px 20px;
-                box-sizing: border-box;
-                display: flex;
-                gap: 20px;
-                scroll-snap-type: x mandatory;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            /* Mobilde Sabit Pozisyonları Ezerek Yatay Şerit Yapıyoruz */
+            /* Sabit Not Kağıtlarını Kaldırıp Aşağıda Yatay Şerit Yapıyoruz */
             .sticky-note {
                 position: relative !important;
                 top: auto !important;
@@ -610,46 +598,47 @@
                 flex: 0 0 240px;
                 min-height: 200px;
                 box-shadow: 3px 3px 12px rgba(0,0,0,0.3);
-                scroll-snap-align: center;
             }
             
             .sticky-note:hover {
                 transform: scale(1.02) !important;
             }
 
-            .notes-container::-webkit-scrollbar {
-                display: none; /* Kaydırma çubuğunu gizler */
+            /* Mobilde Notların Yan Yana Kaydırılabilir Şerit Olması */
+            .notes-wrapper-mobile {
+                width: 100%;
+                overflow-x: auto;
+                padding: 30px 20px;
+                box-sizing: border-box;
+                display: flex;
+                gap: 20px;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+            }
+            .sticky-note {
+                scroll-snap-align: center;
+            }
+            .notes-wrapper-mobile::-webkit-scrollbar {
+                display: none; /* Kaydırma çubuğunu gizle */
             }
 
             .gallery-container { padding-top: 40px; }
             .section-heading { font-size: 2rem; margin-bottom: 40px; }
-            
-            /* Zarf Dinamik Boyutlandırma */
             .envelope-wrapper { max-width: 90%; }
             .envelope { height: 280px; }
-            .envelope-flap {
-                border-left-width: calc(100vw * 0.45);
-                border-right-width: calc(100vw * 0.45);
-                border-top-width: 150px;
-            }
-            .envelope-wrapper.open .letter-paper { 
-                transform: translateY(120px); 
-            }
+            .envelope-wrapper.open .letter-paper { transform: translateY(-40%); }
             .letter-text { font-size: 0.95rem; line-height: 1.6; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Perde Giriş Ekranı -->
     <div class="welcome-curtain" id="curtain">
         <button class="start-btn" onclick="startEverything()">Anılarımızı Canlandır 🤎</button>
     </div>
 
-    <!-- Müzik Kontrolü -->
     <div class="music-control" id="musicBtn" onclick="toggleMusic()">🔇</div>
 
-    <!-- Ana Başlık ve Sayaç Bölümü -->
     <section class="hero">
         <div class="glass-header-container fade-in-up">
             <h1 class="main-title">
@@ -669,8 +658,7 @@
         </div>
     </section>
 
-    <!-- Not Kağıtları (Masaüstünde Sabit Kenarlarda, Mobilde Kaydırılabilir Şerit) -->
-    <div class="notes-container">
+    <div class="notes-wrapper-mobile">
         <div class="sticky-note note-left-1">
             <div>"Unutma; kalbimin en güzel köşesi her zaman seninle dolu."</div>
             <div class="note-date">Not #1</div>
@@ -692,7 +680,6 @@
         </div>
     </div>
 
-    <!-- Fotoğraf Galerisi -->
     <section class="gallery-container">
         <h2 class="section-heading">Dokun ve Anıları Canlandır</h2>
         
@@ -780,7 +767,6 @@
         </div>
     </section>
 
-    <!-- Mektup Zarfı Bölümü -->
     <section class="envelope-section">
         <div class="envelope-wrapper" id="envelopeWrapper" onclick="toggleEnvelope()">
             <div class="envelope">
@@ -828,7 +814,7 @@
         function startEverything() {
             document.getElementById('curtain').classList.add('slide-up');
             playMusic();
-            startParticles(); // Arka plan parçacıklarını başlatır
+            startParticles(); // Arka plan yaprak/kalp yağmurunu başlatır
             
             setTimeout(() => {
                 document.getElementById('curtain').style.display = 'none';
@@ -875,39 +861,40 @@
             }
         }
 
-        // 4. SÜZÜLEN YEŞİL VE KAHVERENGİ KALP PARÇACIKLARI EFEKTİ
-        function startParticles() {
-            const particles = ['💚', '🤎']; 
-            
-            setInterval(() => {
-                if (document.hidden) return; // Sekme arka plandaysa işlemciyi yormasın
-                
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                particle.innerHTML = particles[Math.floor(Math.random() * particles.length)];
-                
-                // Yatay eksende taşmayı önlemek için sınırlandırılmış rastgele başlangıç noktası (%3-%93 arası)
-                particle.style.left = (Math.random() * 90 + 3) + 'vw';
-                
-                // Rastgele boyut derinlik hissi yaratır
-                const size = (Math.random() * 0.6 + 0.7) + 'rem'; 
-                particle.style.fontSize = size;
-                
-                // Yavaş süzülme süresi (8 ila 12 saniye arası)
-                const duration = (Math.random() * 4 + 8) + 's';
-                particle.style.animationDuration = duration;
-                
-                // Sallanma efekti gecikmesi
-                particle.style.animationDelay = Math.random() * 2 + 's';
-                
-                document.body.appendChild(particle);
-                
-                // Animasyon bitiminde DOM temizliği
-                setTimeout(() => {
-                    particle.remove();
-                }, 12000);
-            }, 800);
-        }
+        // 4. // SÜZÜLEN YEŞİL VE KAHVERENGİ KALP PARÇACIKLARI EFEKTİ
+function startParticles() {
+    // Sadece yeşil ve kahverengi kalp emojileri
+    const particles = ['💚', '🤎']; 
+    
+    setInterval(() => {
+        if (document.hidden) return; // Sekme arka plandaysa işlemciyi yormasın
+        
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.innerHTML = particles[Math.floor(Math.random() * particles.length)];
+        
+        // Rastgele yatay başlangıç pozisyonu
+        particle.style.left = Math.random() * 100 + 'vw';
+        
+        // Rastgele boyut (biri büyük biri küçük, daha derin bir his yaratır)
+        const size = (Math.random() * 0.6 + 0.7) + 'rem'; // 0.7rem - 1.3rem arası mini boyutlar
+        particle.style.fontSize = size;
+        
+        // Çok daha yavaş süzülme süresi (8 ila 12 saniye arası)
+        const duration = (Math.random() * 4 + 8) + 's';
+        particle.style.animationDuration = duration;
+        
+        // Hafif sağa sola sallanma efekti için rastgele bir gecikme
+        particle.style.animationDelay = Math.random() * 2 + 's';
+        
+        document.body.appendChild(particle);
+        
+        // Animasyon bittiğinde elementi temizle (Hafıza dostu)
+        setTimeout(() => {
+            particle.remove();
+        }, 12000); // En uzun süre olan 12 saniye sonra silinir
+    }, 800); // Kalplerin ekranda çok yoğun olmaması, göz yormaması için aralığı 800ms yaptık
+}
     </script>
 
 </body>
