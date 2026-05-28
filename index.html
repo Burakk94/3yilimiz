@@ -629,6 +629,48 @@
             .envelope-wrapper.open .letter-paper { transform: translateY(-40%); }
             .letter-text { font-size: 0.95rem; line-height: 1.6; }
         }
+/* MOBİL CİHAZLAR İÇİN ÖZEL UYUMLULUK AYARLARI */
+@media screen and (max-width: 576px) {
+    
+    /* 1. İsimlerin ve & işaretinin mobil font ve satır ayarları */
+    .names-title {
+        font-size: 1.8rem !important; /* Yazı boyutunu mobilde biraz küçülttük ki taşmasın */
+        line-height: 1.4 !important;  /* Satır aralığını açtık */
+        text-align: center;
+    }
+    
+    .ampersand {
+        display: block;
+        font-size: 1.5rem !important; /* & işaretinin boyutu */
+        margin: 5px 0;                /* Alt ve üstten hafif boşluk */
+    }
+
+    /* 2. Zarfın Mobilde Düzgün Kapanması İçin Ayarlar */
+    /* (Not: Sitenizdeki zarf kapak sınıfının ismine göre burayı optimize ettim) */
+    .envelope {
+        width: 280px !important;  /* Mobilde zarf genişliğini ekrana sığacak şekilde sabitledik */
+        height: 180px !important; /* Zarf yüksekliği */
+    }
+
+    /* Zarfın üst kapağının (üçgen kısım) mobilde tam kapanması ve taşmaması için */
+    .envelope-flap {
+        top: 0 !important;
+        transform-origin: top;
+        /* Zarfın kapanma hizasını mobilde tam sıfıra çekiyoruz */
+        transform: rotateX(0deg) !important; 
+    }
+
+    /* Eğer zarf açılıp kapanan bir mekanizmaya sahipse, kapalı haldeki konumunu sabitliyoruz */
+    .envelope.closed .envelope-flap {
+        transform: rotateX(0deg) !important;
+        z-index: 10; /* Kapağın önde durup zarfı kapatması için */
+    }
+    
+    /* Polaroid kartların zarfın içinden taşmasını önlemek için */
+    .photo-card {
+        max-width: 90% !important;
+    }
+}
     </style>
 </head>
 <body>
